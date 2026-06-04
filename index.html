@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyote</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-void:#000000;
+  --bg-deep:#040406;
+  --bg-panel:#0a0a10;
+  --border:rgba(0,229,255,0.10);
+  --cyan:#00e5ff;
+  --cyan-soft:#5cf2ff;
+  --cyan-glow:rgba(0,229,255,0.35);
+  --red:#ff2d4d;
+  --red-soft:#ff5c75;
+  --red-glow:rgba(255,45,77,0.35);
+  --tx-bri:#ffffff;
+  --tx-norm:#bcc8dc;
+  --tx-dim:#4e5c78;
+  --font-display:'Rajdhani',sans-serif;
+  --font-mono:'Share Tech Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg-void);color:var(--tx-norm);
+  font-family:var(--font-display);overflow-x:hidden;min-height:100vh;
+}
+::selection{background:var(--cyan);color:var(--bg-void)}
+
+/* Noise overlay */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.04;mix-blend-mode:overlay;
+}
+
+/* Scanlines */
+body::after{
+  content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.22) 2px,rgba(0,0,0,0.22) 3px);
+}
+
+/* ── Chromatic aberration ── */
+.ab{
+  position:relative;display:inline-block;color:var(--tx-bri);
+  text-shadow:
+    -0.05em 0 rgba(255,45,77,0.85),
+    0.05em 0 rgba(0,229,255,0.85);
+  animation:chroma 5s ease-in-out infinite;
+}
+@keyframes chroma{
+  0%,100%{text-shadow:-0.05em 0 rgba(255,45,77,0.85),0.05em 0 rgba(0,229,255,0.85)}
+  25%{text-shadow:-0.07em 0 rgba(255,45,77,0.7),0.07em 0 rgba(0,229,255,0.7)}
+  50%{text-shadow:-0.04em 0 rgba(255,45,77,0.9),0.06em 0 rgba(0,229,255,0.9)}
+  75%{text-shadow:-0.06em 0 rgba(255,45,77,0.75),0.05em 0 rgba(0,229,255,0.75)}
+}
+.ab-mini{
+  text-shadow:
+    -1px 0 rgba(255,45,77,0.7),
+    1px 0 rgba(0,229,255,0.7);
+}
+
+/* ── Nav ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(0,0,0,0.78);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{display:flex;align-items:baseline;gap:12px}
+.nav-brand h1{
+  font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--tx-bri);
+  letter-spacing:3px;text-transform:uppercase;
+  text-shadow:-1px 0 rgba(255,45,77,0.7),1px 0 rgba(0,229,255,0.7);
+}
+.nav-brand span{font-family:var(--font-mono);font-size:11px;color:var(--tx-dim);letter-spacing:1px}
+.nav-status{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:11px;color:var(--tx-dim);letter-spacing:2px;
+}
+.nav-status::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 8px var(--cyan),0 0 14px var(--cyan-glow);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+
+/* ── Hero ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:120px 48px 80px;position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 55% 50% at 75% 50%,rgba(0,229,255,0.08),transparent 60%),
+    radial-gradient(ellipse 35% 35% at 30% 85%,rgba(255,45,77,0.04),transparent 60%);
+}
+.hero-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 100% 80% at 50% 50%,transparent 50%,rgba(0,0,0,0.55) 100%);
+}
+
+/* Orbital rings */
+.orbits{
+  position:absolute;top:50%;right:6%;transform:translateY(-50%);
+  width:min(640px,52vw);height:min(640px,52vw);pointer-events:none;
+}
+.rings circle{fill:none}
+.ring-1{stroke:var(--cyan);stroke-width:0.6;opacity:0.35}
+.ring-2{stroke:var(--cyan);stroke-width:0.4;opacity:0.25;stroke-dasharray:4 6}
+.ring-3{stroke:var(--cyan);stroke-width:0.3;opacity:0.18;stroke-dasharray:1 4}
+.ring-4{stroke:var(--red);stroke-width:0.35;opacity:0.2;stroke-dasharray:6 12}
+
+.orbit-spin-a{transform-origin:center;transform-box:view-box;animation:spin 30s linear infinite}
+.orbit-spin-b{transform-origin:center;transform-box:view-box;animation:spin 50s linear infinite reverse}
+.orbit-spin-c{transform-origin:center;transform-box:view-box;animation:spin 70s linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.dot-cyan{fill:var(--cyan);filter:drop-shadow(0 0 4px var(--cyan))}
+.dot-red{fill:var(--red);filter:drop-shadow(0 0 4px var(--red))}
+
+.sphere{transform-origin:center;transform-box:view-box;animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{
+  0%,100%{transform:scale(1);opacity:0.95}
+  50%{transform:scale(1.08);opacity:1}
+}
+
+.hero-content{position:relative;max-width:900px;z-index:2}
+.hero h2{
+  font-family:var(--font-display);font-size:clamp(48px,8vw,84px);font-weight:700;
+  color:var(--tx-bri);line-height:1.0;letter-spacing:-1px;margin-bottom:24px;
+}
+.hero-desc{
+  font-size:17px;line-height:1.7;color:var(--tx-norm);max-width:560px;margin-bottom:48px;
+}
+.hero-cta{
+  margin-top:48px;padding-top:40px;border-top:1px solid var(--border);
+  animation:fadeUp 0.8s 0.8s both;
+}
+.hero-cta h3{
+  font-family:var(--font-display);font-size:32px;font-weight:700;
+  color:var(--tx-bri);letter-spacing:1px;margin-bottom:8px;
+}
+.hero-cta>p{font-size:15px;color:var(--tx-dim);margin-bottom:28px;line-height:1.6}
+
+/* ── Trapezoid button ── */
+.trap-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:16px 40px;position:relative;text-decoration:none;
+  font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--tx-bri);background:transparent;border:none;cursor:pointer;
+  clip-path:polygon(8% 0%,100% 0%,92% 100%,0% 100%);
+  transition:all 0.3s;
+}
+.trap-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,30,42,0.95),rgba(0,8,14,0.7));
+  clip-path:polygon(8% 0%,100% 0%,92% 100%,0% 100%);
+  z-index:-2;
+}
+.trap-btn::after{
+  content:'';position:absolute;inset:-1px;
+  background:linear-gradient(180deg,var(--cyan),rgba(0,229,255,0.25));
+  clip-path:polygon(8% 0%,100% 0%,92% 100%,0% 100%);
+  z-index:-3;
+  filter:drop-shadow(0 0 8px var(--cyan-glow));
+}
+.trap-btn:hover{
+  color:var(--cyan-soft);transform:translateY(-2px);
+  text-shadow:-1px 0 rgba(255,45,77,0.7),1px 0 rgba(0,229,255,0.7);
+}
+.trap-btn:hover::before{background:linear-gradient(180deg,rgba(0,42,58,1),rgba(0,12,20,0.85))}
+.trap-btn:hover::after{
+  background:linear-gradient(180deg,var(--cyan-soft),var(--cyan));
+  filter:drop-shadow(0 0 22px var(--cyan-glow)) drop-shadow(2px 0 6px var(--red-glow));
+}
+
+/* ── Footer ── */
+footer{
+  padding:32px 48px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;
+}
+footer span{font-family:var(--font-mono);font-size:11px;color:var(--tx-dim);letter-spacing:2px}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero h2{animation:fadeUp 0.8s 0.2s both}
+.hero-desc{animation:fadeUp 0.8s 0.4s both}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  nav{padding:0 24px}
+  .nav-status{display:none}
+  .hero{padding:120px 24px 60px}
+  .orbits{right:-30%;top:auto;bottom:0;transform:none;width:120vw;height:120vw;opacity:0.35}
+  .hero-content{z-index:3}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:24px}
+}
+
+/* Respect reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <h1>Hyote</h1>
+    <span>// tweaker</span>
+  </div>
+  <div class="nav-status">SYSTEM ONLINE</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <svg class="orbits" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter id="chromatic" x="-50%" y="-50%" width="200%" height="200%">
+        <feOffset dx="-3" dy="0" in="SourceGraphic" result="r-shift"/>
+        <feColorMatrix in="r-shift" type="matrix"
+          values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
+        <feOffset dx="3" dy="0" in="SourceGraphic" result="c-shift"/>
+        <feColorMatrix in="c-shift" type="matrix"
+          values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="c"/>
+        <feBlend in="r" in2="c" mode="screen" result="rc"/>
+        <feBlend in="SourceGraphic" in2="rc" mode="screen"/>
+      </filter>
+      <radialGradient id="core-grad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+        <stop offset="40%" stop-color="#00e5ff" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <g class="rings">
+      <circle class="ring-1" cx="0" cy="0" r="180"/>
+      <circle class="ring-2" cx="0" cy="0" r="150"/>
+      <circle class="ring-3" cx="0" cy="0" r="115"/>
+      <circle class="ring-4" cx="0" cy="0" r="85"/>
+    </g>
+
+    <g class="orbit-spin-a">
+      <circle class="dot-cyan" cx="180" cy="0" r="2.5"/>
+    </g>
+    <g class="orbit-spin-b">
+      <circle class="dot-cyan" cx="0" cy="-150" r="1.8"/>
+      <circle class="dot-cyan" cx="115" cy="0" r="1.4" opacity="0.7"/>
+    </g>
+    <g class="orbit-spin-c">
+      <circle class="dot-red" cx="-85" cy="0" r="1.8"/>
+    </g>
+
+    <g class="sphere" filter="url(#chromatic)">
+      <circle cx="0" cy="0" r="22" fill="url(#core-grad)"/>
+      <circle cx="0" cy="0" r="5" fill="#fff"/>
+    </g>
+  </svg>
+
+  <div class="hero-vignette"></div>
+
+  <div class="hero-content">
+    <h2>Building the<br>fastest <span class="ab">Windows</span><br>you'll ever run.</h2>
+    <p class="hero-desc">Custom kernel drivers, hardware-level tuning, and aggressive OS stripping for competitive gaming. Every layer optimized — from the skin of the interface down to the bare bones of the kernel.</p>
+    <div class="hero-cta">
+      <h3>Get <span class="ab">sfera</span></h3>
+      <p>The successor to Frenzy. The last Windows you'll ever need to install for gaming.</p>
+      <a href="https://www.patreon.com/cw/Hyote" target="_blank" rel="noopener" class="trap-btn">
+        Get Frenzy &amp; sfera here
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H5M13 1V9" stroke="currentColor" stroke-width="1.5"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>// HYOTE.SYS</span>
+  <span class="ab-mini">// CHROMATIC</span>
+</footer>
+
+</body>
+</html>
