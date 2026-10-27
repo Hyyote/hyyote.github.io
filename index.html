@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Mythical — Hyote's low-latency Windows playbook.">
+<meta property="og:title" content="Mythical">
+<meta property="og:description" content="A Windows playbook forged for the lowest latency your hardware can give.">
+<meta property="og:image" content="https://hyyote.github.io/mythical-bg.jpg">
+<title>Mythical — zero.delay</title>
+<link rel="preload" as="image" href="mythical-bg.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#000000;
+  --bone:#e8e4da;
+  --silver:#b7b3a8;
+  --dim:#6a675f;
+  --mist:rgba(232,228,218,0.18);
+  --font-display:'Cinzel',serif;
+  --font-mono:'Share Tech Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);color:var(--silver);
+  font-family:var(--font-mono);overflow-x:hidden;min-height:100vh;
+}
+::selection{background:var(--bone);color:var(--ink)}
+
+/* Grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.05;mix-blend-mode:overlay;
+}
+
+/* ── Nav ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:linear-gradient(180deg,rgba(0,0,0,0.82),rgba(0,0,0,0));
+  padding:0 48px;height:72px;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{display:flex;align-items:baseline;gap:12px}
+.nav-brand h1{
+  font-family:var(--font-mono);font-weight:400;font-size:18px;color:var(--bone);
+  letter-spacing:3px;
+}
+.nav-brand span{font-size:11px;color:var(--dim);letter-spacing:1px}
+.nav-status{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;color:var(--silver);letter-spacing:3px;
+}
+.nav-status::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:var(--bone);
+  box-shadow:0 0 10px rgba(232,228,218,0.8);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ── Hero ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:120px 48px 100px;position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:url('mythical-bg.jpg') center right / cover no-repeat;
+}
+.scrim-l{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.62) 32%,rgba(0,0,0,0.2) 58%,rgba(0,0,0,0) 78%);
+}
+.scrim-b{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0) 38%);
+}
+.vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 100% 90% at 50% 45%,transparent 55%,rgba(0,0,0,0.6) 100%);
+}
+
+.hero-content{position:relative;max-width:680px;z-index:2}
+.eyebrow{
+  font-size:12px;letter-spacing:4px;color:var(--silver);
+  text-shadow:0 1px 8px rgba(0,0,0,0.9);
+  margin-bottom:22px;animation:fadeUp 0.9s 0.05s both;
+}
+.hero h2{
+  font-family:var(--font-display);font-weight:900;
+  font-size:clamp(58px,10vw,122px);line-height:1;
+  letter-spacing:0.04em;color:var(--bone);
+  text-shadow:
+    0 2px 26px rgba(0,0,0,0.95),
+    0 1px 0 rgba(255,255,255,0.08),
+    0 -1px 0 rgba(0,0,0,0.6),
+    0 0 70px rgba(232,228,218,0.14);
+  margin-bottom:26px;animation:fadeUp 0.9s 0.2s both;
+}
+.rule{
+  display:flex;align-items:center;gap:16px;max-width:420px;
+  margin-bottom:26px;animation:fadeUp 0.9s 0.35s both;
+}
+.rule::before,.rule::after{
+  content:'';height:1px;flex:1;
+  background:linear-gradient(90deg,transparent,var(--mist));
+}
+.rule::after{background:linear-gradient(90deg,var(--mist),transparent)}
+.rule i{
+  width:7px;height:7px;background:var(--bone);transform:rotate(45deg);
+  box-shadow:0 0 12px rgba(232,228,218,0.5);
+}
+.hero-desc{
+  font-size:15px;line-height:1.8;color:var(--silver);max-width:480px;
+  text-shadow:0 1px 10px rgba(0,0,0,0.95);letter-spacing:0.5px;
+  margin-bottom:48px;animation:fadeUp 0.9s 0.5s both;
+}
+
+/* ── Button ── */
+.cta{animation:fadeUp 0.9s 0.65s both}
+.myth-btn{
+  position:relative;display:inline-flex;align-items:center;gap:14px;
+  padding:19px 46px;text-decoration:none;cursor:pointer;
+  font-family:var(--font-display);font-weight:700;font-size:14px;
+  letter-spacing:4px;text-transform:uppercase;color:var(--bone);
+  background:rgba(0,0,0,0.55);border:1px solid var(--mist);
+  backdrop-filter:blur(3px);
+  transition:all 0.35s ease;
+}
+.myth-btn::before,.myth-btn::after{
+  content:'';position:absolute;width:11px;height:11px;transition:all 0.35s ease;
+}
+.myth-btn::before{
+  top:-5px;left:-5px;
+  border-top:1px solid var(--bone);border-left:1px solid var(--bone);
+}
+.myth-btn::after{
+  bottom:-5px;right:-5px;
+  border-bottom:1px solid var(--bone);border-right:1px solid var(--bone);
+}
+.myth-btn:hover{
+  background:var(--bone);color:var(--ink);border-color:var(--bone);
+  box-shadow:0 0 44px rgba(232,228,218,0.35);
+}
+.myth-btn:hover::before,.myth-btn:hover::after{
+  width:16px;height:16px;top:-7px;left:-7px;
+}
+.myth-btn:hover::after{top:auto;left:auto;bottom:-7px;right:-7px}
+.myth-btn:focus-visible{
+  outline:2px solid var(--bone);outline-offset:4px;
+}
+.myth-btn svg{transition:transform 0.35s ease}
+.myth-btn:hover svg{transform:translate(3px,-3px)}
+
+/* ── Footer ── */
+footer{
+  position:relative;z-index:2;
+  padding:28px 48px;border-top:1px solid rgba(232,228,218,0.1);
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--ink);
+}
+footer span{font-size:11px;color:var(--dim);letter-spacing:3px}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  nav{padding:0 24px}
+  .nav-status{display:none}
+  .hero{padding:110px 24px 70px;align-items:flex-end}
+  .hero-bg{background-position:66% center}
+  .scrim-l{background:linear-gradient(90deg,rgba(0,0,0,0.65),rgba(0,0,0,0.25))}
+  .scrim-b{background:linear-gradient(0deg,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.3) 55%,rgba(0,0,0,0) 80%)}
+  .myth-btn{padding:17px 30px;letter-spacing:3px}
+  footer{flex-direction:column;gap:10px;text-align:center;padding:22px}
+}
+
+/* Respect reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <h1>zero.delay</h1>
+    <span>// by Hyote</span>
+  </div>
+  <div class="nav-status">NOW LIVE</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="scrim-l"></div>
+  <div class="scrim-b"></div>
+  <div class="vignette"></div>
+
+  <div class="hero-content">
+    <p class="eyebrow">// HYOTE PRESENTS</p>
+    <h2>Mythical</h2>
+    <div class="rule"><i></i></div>
+    <p class="hero-desc">A Windows playbook forged for the lowest latency your hardware can give.</p>
+    <div class="cta">
+      <a href="https://boosty.to/hyote/posts/99a2e08e-8bb9-4b15-811b-aac6a617ffa6?share=success_publish_link" target="_blank" rel="noopener" class="myth-btn">
+        Get the Mythical Playbook
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 13L13 1M13 1H5M13 1V9" stroke="currentColor" stroke-width="1.5"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>// HYOTE.SYS</span>
+  <span>// MYTHICAL</span>
+</footer>
+
+</body>
+</html>
